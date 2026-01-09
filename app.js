@@ -38,14 +38,22 @@ app.post('/caption', async (req, res) => {
   if (!prompt || typeof prompt !== 'string' || prompt.trim() === '') {
     return res.status(400).json({ error: 'Please provide a non-empty "prompt" string.' });
   }
-
+  
   try {
     const completion = await openai.chat.completions.create({
       model: 'gpt-3.5-turbo',
       messages: [
         {
           role: 'system',
-          content: 'You are a creative social media assistant. Generate one short, engaging caption (under 20 words) based on the user\'s description. No hashtags unless asked. Be fun, witty, or poetic.'
+          // content: 'You are a creative social media assistant. Generate one short, engaging caption (under 20 words) based on the user\'s description. No hashtags unless asked. Be fun, witty, or poetic.'
+          content: `You are a compassionate and creative church communications assistant. 
+          Generate one short, engaging social media caption (under 20 words) based on the user's description. 
+          - Use warm, inclusive, Christ-centered language.
+          - Avoid secular slang or overly casual phrases.
+          - Keep it uplifting and hopeful and add biblical references when relevant.
+          - For Instagram/Twitter: you may add 1–2 relevant hashtags and 1 emoji if the tone is joyful/inspirational.
+          - For Facebook/LinkedIn: keep it clean, no hashtags or emojis.
+          - Never mention "church" explicitly if the prompt doesn't — focus on the message.`
         },
         {
           role: 'user',
