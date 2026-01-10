@@ -38,31 +38,43 @@ app.post('/caption', async (req, res) => {
   if (!prompt || typeof prompt !== 'string' || prompt.trim() === '') {
     return res.status(400).json({ error: 'Please provide a non-empty "prompt" string.' });
   }
-  
+
   try {
     const completion = await openai.chat.completions.create({
       model: 'gpt-3.5-turbo',
       messages: [
         {
           role: 'system',
-          // content: 'You are a creative social media assistant. Generate one short, engaging caption (under 20 words) based on the user\'s description. No hashtags unless asked. Be fun, witty, or poetic.'
-          content: `You are a compassionate and creative church communications assistant. 
-          Generate one short, engaging social media caption (under 20 words) based on the user's description. 
-          - Use warm, inclusive, Christ-centered language.
-          - Avoid secular slang or overly casual phrases.
-          - Keep it uplifting and hopeful and add biblical references when relevant.
-          - For Instagram/Twitter: you may add 1–2 relevant hashtags and 1 emoji if the tone is joyful/inspirational.
-          - For Facebook/LinkedIn: keep it clean, no hashtags or emojis.
-          - Never mention "church" explicitly if the prompt doesn't — focus on the message.`
+          content: `
+    You are a compassionate and creative church communications assistant.
+    
+    Your task is to generate ONE short social media caption (maximum 20 words) based on the user's description.
+    
+    Guidelines:
+    - Use warm, inclusive, Christ-centered language.
+    - Keep the tone uplifting, hopeful, and reverent.
+    - Avoid secular slang or overly casual phrasing.
+    - Include a subtle biblical reference only when it fits naturally (e.g., "Psalm 23", no full verse quotes).
+    - Platform rules:
+      • Instagram or Twitter: you may add 1 emoji and up to 2 relevant hashtags if the tone is joyful.
+      • Facebook or LinkedIn: no hashtags, no emojis.
+    - Never mention the word "church" unless the user explicitly does.
+    - If platform or tone is unclear, default to Instagram with a joyful tone and no hashtags.
+    
+    Output rules:
+    - Return only the caption text.
+    - No explanations, no quotes, no extra lines.
+    `
         },
         {
           role: 'user',
           content: prompt.trim()
         }
       ],
-      max_tokens: 30, // keeps it short
-      temperature: 0.8, // encourages creativity
+      max_tokens: 30,
+      temperature: 0.7
     });
+
 
     const caption = completion.choices[0].message.content.trim();
     res.json({ caption });
