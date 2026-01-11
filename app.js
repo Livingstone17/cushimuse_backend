@@ -40,41 +40,6 @@ app.post('/caption', async (req, res) => {
   }
 
   try {
-    // const completion = await openai.chat.completions.create({
-    //   model: 'gpt-3.5-turbo',
-    //   messages: [
-    //     {
-    //       role: 'system',
-    //       content: `
-    // You are a compassionate and creative church communications expert and social media manager.
-    
-    // Your task is to generate ONE short social media caption (minimum of 15 words) based on the user's description.
-    
-    // Guidelines:
-    // - Use warm, inclusive, Christ-centered language.
-    // - Keep the tone uplifting, hopeful, and reverent.
-    // - Avoid secular slang or overly casual phrasing.
-    // - Include a subtle biblical reference only when it fits naturally (e.g., "Psalm 23", no full verse quotes).
-    // - Platform rules:
-    //   • Instagram or Twitter: you may add 1 emoji and up to 2 relevant hashtags if the tone is joyful.
-    //   • Facebook or LinkedIn: no hashtags, no emojis.
-    // - Never mention the word "church" unless the user explicitly does.
-    // - If platform or tone is unclear, default to Instagram with a joyful tone and no hashtags.
-    
-    // Output rules:
-    // - Return only the caption text.
-    // - No explanations, no quotes, no extra lines.
-    // `
-    //     },
-    //     {
-    //       role: 'user',
-    //       content: prompt.trim()
-    //     }
-    //   ],
-    //   max_tokens: 30,
-    //   temperature: 0.7
-    // });
-
     const completion = await openai.chat.completions.create({
       model: 'gpt-3.5-turbo',
       messages: [
