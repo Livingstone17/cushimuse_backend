@@ -1,21 +1,25 @@
-// server.js
 const express = require('express');
 const { OpenAI } = require('openai');
+const cors = require('cors');
+const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// ✅ 1. Security & CORS first
+app.use(cors()); // Allow all origins (restrict in production)
 
-//  rate-limiting code 
-const rateLimit = require('express-rate-limit');
+// ✅ 2. Body parsing next
+app.use(express.json({ limit: '1mb' })); // Add limit for safety
+
+// ✅ 3. Rate limiting (applies to /caption only)
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 20, // limit each IP to 20 requests per windowMs
+  windowMs: 15 * 60 * 1000,
+  max: 20,
   message: 'Too many caption requests from this IP, please try again later.',
 });
 app.use('/caption', limiter);
-
 
 // Initialize OpenAI client
 const openai = new OpenAI({
@@ -48,7 +52,7 @@ app.post('/caption', async (req, res) => {
           content: `You are a gifted church communications director with 10+ years of experience crafting social media content for diverse congregations. Your voice is warm, grace-filled, and deeply rooted in Scripture—yet accessible to seekers and longtime believers alike.
     
     Generate EXACTLY ONE caption that meets ALL of these criteria:
-    ✅ LENGTH: 15–20 words (never shorter, never longer)
+    ✅ LENGTH: 20–25 words (never shorter, never longer)
     ✅ TONE: Match the user’s specified tone (inspirational/welcoming/joyful/etc.) with Christ-centered hope
     ✅ STYLE: 
        - Use active, inviting language (“Join us…” not “We’re having…”)
