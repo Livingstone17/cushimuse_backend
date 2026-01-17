@@ -45,42 +45,47 @@ app.post('/caption', async (req, res) => {
 
   try {
     const completion = await openai.chat.completions.create({
-      model: 'gpt-3.5-turbo',
+      model: "gpt-3.5-turbo",
       messages: [
         {
-          role: 'system',
-          content: `You are a gifted church communications director with 10+ years of experience crafting social media content for diverse congregations. Your voice is warm, grace-filled, and deeply rooted in Scripture—yet accessible to seekers and longtime believers alike.
-    
-    Generate EXACTLY ONE caption that meets ALL of these criteria:
-    ✅ LENGTH: 20–25 words (never shorter, never longer)
-    ✅ TONE: Match the user’s specified tone (inspirational/welcoming/joyful/etc.) with Christ-centered hope
-    ✅ STYLE: 
-       - Use active, inviting language (“Join us…” not “We’re having…”)
-       - Weave in subtle biblical allusions only when natural (e.g., “like living water” not John 4:14)
-       - NEVER use slang (“lit”, “vibes”), emojis, or hashtags UNLESS:
-            • Platform is Instagram/Twitter AND tone is "joyful" → add 1 relevant emoji (🙏✨🙌) AND 1–2 hashtags (#FaithFamily #SundayWorship)
-    ✅ PLATFORM RULES:
-       - Facebook/LinkedIn: pure text, no symbols
-       - Instagram/Twitter: emoji + hashtags ONLY if joyful tone
-    ✅ OUTPUT: Return ONLY the caption text. No prefixes, no explanations, no quotation marks.`
+          role: "system",
+          content: `
+  You are an experienced church communications director.
+  You write warm, Christ-centered social media captions that feel welcoming, hopeful, and accessible to both seekers and longtime believers.
+  Your writing is concise, natural, and reverent without being preachy.
+          `.trim()
         },
         {
-          role: 'user',
-          content: prompt.trim()
+          role: "user",
+          content: `
+  ${prompt.trim()}
+  
+  STRICT RULES:
+  - Generate EXACTLY ONE caption
+  - Length must be between 30 and 45 words
+  - Use active, inviting language (Join us, Come and experience, Gather with us)
+  - Match the requested tone precisely
+  - Use subtle biblical allusions only if they sound natural
+  - Do NOT use slang or emojis unless platform and tone explicitly allow it
+  - Do NOT explain or label the caption
+  - Return ONLY the caption text
+  
+  If you fail any rule, silently rewrite until all rules are satisfied.
+          `.trim()
         }
       ],
-      max_tokens: 40,
-      temperature: 0.6,
-      top_p: 0.9
+      max_tokens: 60,
+      temperature: 0.8,
+      top_p: 1
     });
-
 
     const caption = completion.choices[0].message.content.trim();
     res.json({ caption });
   } catch (error) {
-    console.error('OpenAI error:', error.message);
-    res.status(500).json({ error: 'Failed to generate caption. Try again later.' });
+    console.error("OpenAI error:", error.message);
+    res.status(500).json({ error: "Failed to generate caption. Try again later." });
   }
+
 });
 
 app.listen(PORT, () => {
